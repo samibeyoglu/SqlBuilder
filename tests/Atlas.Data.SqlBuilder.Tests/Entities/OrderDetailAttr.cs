@@ -3,7 +3,7 @@ using Atlas.Data.SqlBuilder.Enums;
 
 namespace Atlas.Data.SqlBuilder.Tests.Entities
 {
-    [Table(Schema = "ec", Name = "Orders", Alias = "o")]
+    [Table(Schema = "ec", Name = "OrderDetails", Alias = "o")]
     public class OrderDetailAttr
     {
         public Guid Id { get; set; }

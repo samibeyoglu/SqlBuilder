@@ -30,7 +30,7 @@
         /// <summary>
         /// Less than or euqal
         /// </summary>
-        LessThanOrEqual,
+        LessOrEqual,
 
         /// <summary>
         /// In

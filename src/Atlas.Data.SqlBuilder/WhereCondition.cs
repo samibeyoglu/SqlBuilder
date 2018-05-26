@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -157,16 +158,22 @@ namespace Atlas.Data.SqlBuilder
             var valueType = value.GetType();
 
             if (valueType == typeof(DateTime?) || valueType == typeof(DateTime))
-                return $"'{((DateTime)value):yyyy-MM-dd HH:mm:ss.fff}'";
+                return $"'{((DateTime)value):yyyy-MM-dd HH:mm:ss.ffff}'";
 
             if (valueType == typeof(DateTimeOffset?) || valueType == typeof(DateTimeOffset))
-                return $"'{((DateTimeOffset)value).ToLocalTime():yyyy-MM-dd HH:mm:ss.fff}'";
+                return $"'{((DateTimeOffset)value).ToLocalTime():yyyy-MM-dd HH:mm:ss.ffff zzz}'";
 
             if (valueType == typeof(bool?) || valueType == typeof(bool))
                 return ((bool)value) ? "TRUE" : "FALSE";
 
-            //for long?, string, TimeSpan?, Guid?, decimal?, double?, int?, short?, Byte?, float?
-            return value.IsNumber() ? value.ToString() : $"'{value}'";
+            if (valueType == typeof(TimeSpan?) || valueType == typeof(TimeSpan))
+                return ((TimeSpan)value).Ticks.ToString();
+
+            //if (valueType == typeof(float) || valueType == typeof(decimal) || valueType == typeof(double) || valueType==typeof(short))
+            //    return Convert.ToDecimal(value).ToString(new CultureInfo("en-US"));
+
+            //for long?, string, TimeSpan?, Guid?, decimal?, int?,  Byte?, float?
+            return value.IsNumber() ? Convert.ToDecimal(value).ToString(new CultureInfo("en-US")) : $"'{value}'";
         }
 
         protected internal override Tuple<string, Dictionary<string, object>> ToSqlWithParameters()

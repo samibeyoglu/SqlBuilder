@@ -49,7 +49,7 @@ namespace Atlas.Data.SqlBuilder
                     return ">=";
                 case ComparisonOperator.LessThan:
                     return "<";
-                case ComparisonOperator.LessThanOrEqual:
+                case ComparisonOperator.LessOrEqual:
                     return "<=";
                 case ComparisonOperator.In:
                     return "IN";
