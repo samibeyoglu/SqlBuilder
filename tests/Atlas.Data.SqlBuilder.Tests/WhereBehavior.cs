@@ -183,7 +183,7 @@ namespace Atlas.Data.SqlBuilder.Tests
         [TestMethod]
         public void Where_DataType_DateTime()
         {
-            var dateOfProduction = new DateTime(2018,05,26);
+            var dateOfProduction = new DateTime(2018, 05, 26);
             const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE o.[DateOfProduction] = '2018-05-26 00:00:00.0000'\r\n";
 
             var sql = _builderAttr.Where(w => w.DateOfProduction, ComparisonOperator.Equal, dateOfProduction).ToSql();
@@ -242,10 +242,60 @@ namespace Atlas.Data.SqlBuilder.Tests
         [TestMethod]
         public void Where_DataType_TimeSpan()
         {
-            var shelfLife=new TimeSpan(364,59,59);
+            var shelfLife = new TimeSpan(364, 59, 59);
             const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE o.[ShelfLife] = 13139990000000\r\n";
 
             var sql = _builderAttr.Where(w => w.ShelfLife, ComparisonOperator.Equal, shelfLife).ToSql();
+            Assert.AreEqual(expectedResult, sql);
+        }
+
+        [TestMethod]
+        public void Where_TwoConditionsWithAnd()
+        {
+            const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE (o.[ProductName] = 'Value1' AND o.[ProductName] = 'Value2')\r\n";
+
+            var sql = _builderAttr.Where(w => w.ProductName, ComparisonOperator.Equal, "Value1")
+                .Where(w => w.ProductName, ComparisonOperator.Equal, "Value2")
+                .ToSql();
+            Assert.AreEqual(expectedResult, sql);
+        }
+
+        [TestMethod]
+        public void Where_TwoConditionsWithOr()
+        {
+            const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE (o.[ProductName] = 'Value1' OR o.[ProductName] = 'Value2')\r\n";
+            var condition1 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value1");
+            var condition2 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value2");
+            var congiditonGroup = new WhereConditionGroup(condition1, GroupOperator.Or, condition2);
+
+            var sql = _builderAttr.Where(congiditonGroup).ToSql();
+            Assert.AreEqual(expectedResult, sql);
+        }
+
+        [TestMethod]
+        public void Where_ThreeConditionsWithOr()
+        {
+            const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE (o.[ProductName] = 'Value1' OR o.[ProductName] = 'Value2' OR o.[ProductName] = 'Value3')\r\n";
+            var condition1 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value1");
+            var condition2 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value2");
+            var condition3 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value3");
+            var conditonGroup = new WhereConditionGroup(condition1, GroupOperator.Or, condition2);
+            conditonGroup.AddCondition(GroupOperator.Or, condition3);
+
+            var sql = _builderAttr.Where(conditonGroup).ToSql();
+            Assert.AreEqual(expectedResult, sql);
+        }
+
+        [TestMethod]
+        public void Where_SubConditionWithOr()
+        {
+            const string expectedResult = "SELECT\t*\r\nFROM [ec].[OrderDetails] AS o\r\nWHERE ((o.[ProductName] = 'Value1' OR o.[ProductName] = 'Value2') AND o.[ProductName] = 'Value3')\r\n";
+            var condition1 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value1");
+            var condition2 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value2");
+            var condition3 = new WhereCondition<OrderDetailAttr>(w => w.ProductName, ComparisonOperator.Equal, "Value3");
+            var subConditonGroup = new WhereConditionGroup(condition1, GroupOperator.Or, condition2);
+            var conditionGroup = new WhereConditionGroup(subConditonGroup,GroupOperator.And,condition3);
+            var sql = _builderAttr.Where(conditionGroup).ToSql();
             Assert.AreEqual(expectedResult, sql);
         }
     }

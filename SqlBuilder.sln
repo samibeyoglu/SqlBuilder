@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9E09C3B7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Data.SqlBuilder", "src\Atlas.Data.SqlBuilder\Atlas.Data.SqlBuilder.csproj", "{397D6544-18A1-4DF7-84F1-D1B2956C2238}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Atlas.Data.SqlBuilder.Tests", "tests\Atlas.Data.SqlBuilder.Tests\Atlas.Data.SqlBuilder.Tests.csproj", "{86E9415A-19AE-4C2E-9443-B8B49A3D8B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Atlas.Data.SqlBuilder.Tests", "tests\Atlas.Data.SqlBuilder.Tests\Atlas.Data.SqlBuilder.Tests.csproj", "{86E9415A-19AE-4C2E-9443-B8B49A3D8B37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
